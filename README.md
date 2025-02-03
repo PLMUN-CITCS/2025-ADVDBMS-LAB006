@@ -127,7 +127,6 @@ Only perform this if this is the first time you will setup your Git Environment
       - Open `create_enrollments_table.sql` in a text editor.
       - Create the `Enrollments` table with foreign key constraints:
       ```SQL
-      -- Step 2: Update the Email for Bob Johnson
       -- Step 2: Create the Enrollments table with foreign key constraints
       CREATE TABLE Enrollments (
           EnrollmentID INT PRIMARY KEY AUTO_INCREMENT, -- Or SERIAL/IDENTITY
