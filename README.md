@@ -77,7 +77,7 @@ Only perform this if this is the first time you will setup your Git Environment
 
 ### **Step 3: Complete the Assignment**
 
-**Exercise # 03 - Guided Coding Exercise: Inserting, Updating, and Deleting Records**
+**Exercise # 04 - Guided Coding Exercise: Creating Tables with Primary and Foreign Keys**
 
    **Objective:**
    Learn how to create tables with primary and foreign key relationships in SQL. This exercise demonstrates how to link two tables together, ensuring referential integrity.
