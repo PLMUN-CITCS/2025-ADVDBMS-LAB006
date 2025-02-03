@@ -1,0 +1,50 @@
+name: Autograding Tests
+on: ["push", "repository_dispatch"]
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint
+    - name: File Existence Check - exercise_01.py
+      id: file-existence-check
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: File Existence Check - exercise_01.py
+        command: "test -f exercise_01.py"
+        timeout: 10
+        max-score: 10
+    - name: Syntax Check - exercise_01.py
+      id: syntax-check
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Syntax Check - exercise_01.py
+        command: "pylint exercise_01.py --disable=C"
+        timeout: 10
+        max-score: 30
+    - name: Run Check - exercise_01.py
+      id: logic-check
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Run Check - exercise_01.py
+        setup-command: "chmod +x ./run_tests.sh"
+        command: "./run_tests.sh"
+        timeout: 10
+        max-score: 60
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        FILE-EXISTENCE-CHECK_RESULTS: "${{steps.file-existence-check.outputs.result}}"
+        SYNTAX-CHECK_RESULTS: "${{steps.syntax-check.outputs.result}}"
+        LOGIC-CHECK_RESULTS: "${{steps.logic-check.outputs.result}}"
+      with:
+        runners: file-existence-check,syntax-check,logic-check
