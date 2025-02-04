@@ -1,4 +1,4 @@
-2025-ADVDBMS-WK02S0E04
+2025-ADVDBMS-WK02S02E04
 Week 02 - Review on Database Concepts
 
 Exercise # 04 - Guided Coding Exercise: Creating Tables with Primary and Foreign Keys
