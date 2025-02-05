@@ -38,24 +38,21 @@ else
     exit 1
 fi
 
-# 3. Check Foreign Key Constraints (more robust and correct, ignoring engine/charset)
+# 3. Check Foreign Key Constraints (correct and efficient using information_schema)
 
-fk_check=$(execute_sql "SHOW CREATE TABLE Enrollments;" | grep -E "CONSTRAINT \`fk_student\`|CONSTRAINT \`fk_course\`" | tr -d '\n\t ')
+# Check if fk_student exists
+fk_student_exists=$(execute_sql "SELECT COUNT(*) FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_NAME = 'fk_student' AND TABLE_NAME = 'Enrollments' AND REFERENCED_TABLE_NAME = 'Students';" | tail -n 1)
 
-# Extract only the constraints (before the ENGINE part) using sed
-fk_check=$(echo "$fk_check" | sed 's/)ENGINE.*$//')  # Remove everything from )ENGINE onwards
-
-# Improved expected string construction (only constraints, no engine/charset)
-expected_fk_check=$(echo "EnrollmentsCREATETABLE\`enrollments\`(\n\`EnrollmentID\`int(11)NOTNULLAUTO_INCREMENT,\n\`StudentID\`int(11)DEFAULTNULL,\n\`CourseID\`int(11)DEFAULTNULL,\n\`EnrollmentDate\`dateDEFAULTNULL,\nPRIMARYKEY(\`EnrollmentID\`),\nKEY\`fk_student\`(\`StudentID\`),\nKEY\`fk_course\`(\`CourseID\`),\nCONSTRAINT\`fk_course\`FOREIGNKEY(\`CourseID\`)REFERENCES\`courses\`(\`CourseID\`),\nCONSTRAINT\`fk_student\`FOREIGNKEY(\`StudentID\`)REFERENCES\`students\`(\`StudentID\`)\n" | tr -d '\n\t ')
+# Check if fk_course exists
+fk_course_exists=$(execute_sql "SELECT COUNT(*) FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_NAME = 'fk_course' AND TABLE_NAME = 'Enrollments' AND REFERENCED_TABLE_NAME = 'Courses';" | tail -n 1)
 
 
-if [[ "$fk_check" == "$expected_fk_check" ]]; then
+if [[ "$fk_student_exists" -eq 1 && "$fk_course_exists" -eq 1 ]]; then
     echo "Foreign Key constraints check: PASSED"
 else
-    echo "Foreign Key constraints check: FAILED. Expected: '$expected_fk_check', Found: '$fk_check'"
+    echo "Foreign Key constraints check: FAILED (fk_student: $fk_student_exists, fk_course: $fk_course_exists)"
     exit 1
 fi
-
 
 echo "All database schema validations passed!"
 
