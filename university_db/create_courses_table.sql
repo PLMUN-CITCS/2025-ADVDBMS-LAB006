@@ -1,4 +1,4 @@
-CREATE DATABASE `UniversityDB`;
+USE `UniversityDB`;
 
 -- Step 1: Create the Courses table
 CREATE TABLE `Courses` (

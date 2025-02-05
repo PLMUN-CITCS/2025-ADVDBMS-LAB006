@@ -1,4 +1,4 @@
-CREATE DATABASE `UniversityDB`;
+USE `UniversityDB`;
 
 -- Step 2: Create the Enrollments table with foreign key constraints
 CREATE TABLE `Enrollments` (
