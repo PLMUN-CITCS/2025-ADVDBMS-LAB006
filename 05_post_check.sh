@@ -14,23 +14,6 @@ execute_sql() {
     exit 1
   fi
 }
-#!/bin/bash
-
-# Database credentials (using defaults and environment variables)
-DB_HOST="${DB_HOST:-127.0.0.1}"
-DB_PORT="${DB_PORT:-3306}"  # Changed to standard MySQL port
-DB_USER="${DB_USER:-root}"
-DB_PASSWORD="$DB_PASSWORD_ENV"  # From environment variable
-DB_NAME="$DB_NAME_ENV"          # From environment variable
-
-# Function to execute SQL queries and handle errors
-execute_sql() {
-  mysql -h"$DB_HOST" -P"$DB_PORT" -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "$1"
-  if [[ $? -ne 0 ]]; then
-    echo "Error executing SQL: $1"
-    exit 1
-  fi
-}
 
 # --- Validation ---
 
