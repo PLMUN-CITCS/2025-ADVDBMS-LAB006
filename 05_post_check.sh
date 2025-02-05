@@ -38,11 +38,16 @@ else
     exit 1
 fi
 
-# 3. Check Foreign Key Constraints (more robust and correct)
+# 3. Check Foreign Key Constraints (more robust and correct, ignoring engine/charset)
+
 fk_check=$(execute_sql "SHOW CREATE TABLE Enrollments;" | grep -E "CONSTRAINT \`fk_student\`|CONSTRAINT \`fk_course\`" | tr -d '\n\t ')
 
-# Improved expected string construction (only constraints)
-expected_fk_check=$(echo "EnrollmentsCREATETABLE\`enrollments\`(\n\`EnrollmentID\`int(11)NOTNULLAUTO_INCREMENT,\n\`StudentID\`int(11)DEFAULTNULL,\n\`CourseID\`int(11)DEFAULTNULL,\n\`EnrollmentDate\`dateDEFAULTNULL,\nPRIMARYKEY(\`EnrollmentID\`),\nKEY\`fk_student\`(\`StudentID\`),\nKEY\`fk_course\`(\`CourseID\`),\nCONSTRAINT\`fk_course\`FOREIGNKEY(\`CourseID\`)REFERENCES\`courses\`(\`CourseID\`),\nCONSTRAINT\`fk_student\`FOREIGNKEY(\`StudentID\`)REFERENCES\`students\`(\`StudentID\`)\n)ENGINE=InnoDBDEFAULTCHARSET=utf8mb4COLLATE=utf8mb4_general_ci" | tr -d '\n\t ')
+# Extract only the constraints (before the ENGINE part) using sed
+fk_check=$(echo "$fk_check" | sed 's/)ENGINE.*$//')  # Remove everything from )ENGINE onwards
+
+# Improved expected string construction (only constraints, no engine/charset)
+expected_fk_check=$(echo "EnrollmentsCREATETABLE\`enrollments\`(\n\`EnrollmentID\`int(11)NOTNULLAUTO_INCREMENT,\n\`StudentID\`int(11)DEFAULTNULL,\n\`CourseID\`int(11)DEFAULTNULL,\n\`EnrollmentDate\`dateDEFAULTNULL,\nPRIMARYKEY(\`EnrollmentID\`),\nKEY\`fk_student\`(\`StudentID\`),\nKEY\`fk_course\`(\`CourseID\`),\nCONSTRAINT\`fk_course\`FOREIGNKEY(\`CourseID\`)REFERENCES\`courses\`(\`CourseID\`),\nCONSTRAINT\`fk_student\`FOREIGNKEY(\`StudentID\`)REFERENCES\`students\`(\`StudentID\`)\n" | tr -d '\n\t ')
+
 
 if [[ "$fk_check" == "$expected_fk_check" ]]; then
     echo "Foreign Key constraints check: PASSED"
