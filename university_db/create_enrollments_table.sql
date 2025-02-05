@@ -1,3 +1,5 @@
+CREATE DATABASE `UniversityDB`;
+
 -- Step 2: Create the Enrollments table with foreign key constraints
 CREATE TABLE `Enrollments` (
     `EnrollmentID` INT PRIMARY KEY AUTO_INCREMENT, -- Or SERIAL/IDENTITY
