@@ -112,11 +112,14 @@ Only perform this if this is the first time you will setup your Git Environment
       - Open `create_courses_table`.sql in a text editor.
       - Create the Courses table:
       ```SQL
+      USE `UniversityDB`;
+
       -- Step 1: Create the Courses table
-      CREATE TABLE Courses (
-          CourseID INT PRIMARY KEY AUTO_INCREMENT, -- Or SERIAL/IDENTITY as needed for your DBMS
-          CourseName VARCHAR(100) NOT NULL
+      CREATE TABLE `Courses` (
+      `CourseID` INT PRIMARY KEY AUTO_INCREMENT, -- Or SERIAL/IDENTITY as needed for your DBMS
+      `CourseName` VARCHAR(100) NOT NULL
       );
+
       ```
       
       - Important Note: Use `AUTO_INCREMENT` (MySQL), `SERIAL` (PostgreSQL), or `IDENTITY` (SQL Server) for the `CourseID` as appropriate for your database system.
@@ -127,15 +130,18 @@ Only perform this if this is the first time you will setup your Git Environment
       - Open `create_enrollments_table.sql` in a text editor.
       - Create the `Enrollments` table with foreign key constraints:
       ```SQL
+      USE `UniversityDB`;
+
       -- Step 2: Create the Enrollments table with foreign key constraints
-      CREATE TABLE Enrollments (
-          EnrollmentID INT PRIMARY KEY AUTO_INCREMENT, -- Or SERIAL/IDENTITY
-          StudentID INT,
-          CourseID INT,
-          EnrollmentDate DATE,
-          CONSTRAINT fk_student FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
-          CONSTRAINT fk_course FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+      CREATE TABLE `Enrollments` (
+      `EnrollmentID` INT PRIMARY KEY AUTO_INCREMENT, -- Or SERIAL/IDENTITY
+      `StudentID` INT,
+      `CourseID` INT,
+      `EnrollmentDate` DATE,
+      CONSTRAINT `fk_student` FOREIGN KEY (`StudentID`) REFERENCES `Students`(`StudentID`),
+      CONSTRAINT `fk_course` FOREIGN KEY (`CourseID`) REFERENCES `Courses`(`CourseID`)
       );
+
       ```
          - Important Note: The order in which you create the tables is important. You must create the `Courses` and `Students` tables before you create the `Enrollments` table because the `Enrollments` table references them via foreign keys.
          - The `fk_student` and `fk_course` are names given to the foreign key constraints. You can choose descriptive names.
