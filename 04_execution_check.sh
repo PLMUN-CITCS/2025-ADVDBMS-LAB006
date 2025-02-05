@@ -11,7 +11,7 @@ SQL_DIR="university_db"
 # Array of SQL script filenames (or use a wildcard)
 declare -a SQL_FILES
 #SQL_FILES=("$SQL_DIR"/*.sql)  # Dynamically get all .sql files
-SQL_FILES=("setup.sql" "insert_students.sql" "update_student_email.sql" "delete_student.sql") # Array of filenames
+SQL_FILES=("setup.sql" "create_courses_table.sql" "create_enrollments_table.sql") # Array of filenames
 
 # Loop through the SQL files
 for sql_file in "${SQL_FILES[@]}"; do
