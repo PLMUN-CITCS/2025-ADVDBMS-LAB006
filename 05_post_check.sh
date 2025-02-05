@@ -34,26 +34,7 @@ execute_sql() {
 
 # --- Validation ---
 
-# 1. Check if the Courses table exists
-courses_exists=$(execute_sql "SHOW TABLES LIKE 'Courses';" | tail -n 1)
-if [[ "$courses_exists" == "Courses" ]]; then
-  echo "Courses table exists: PASSED"
-else
-  echo "Courses table existence check: FAILED"
-  exit 1
-fi
-
-# 2. Check if the Enrollments table exists
-enrollments_exists=$(execute_sql "SHOW TABLES LIKE 'Enrollments';" | tail -n 1)
-if [[ "$enrollments_exists" == "Enrollments" ]]; then
-  echo "Enrollments table exists: PASSED"
-else
-  echo "Enrollments table existence check: FAILED"
-  exit 1
-fi
-
-
-# 3. Check the Courses table structure (columns)
+# 1. Check the Courses table structure (columns)
 courses_columns=$(execute_sql "DESCRIBE Courses;" | awk '{print $1}' | grep -E 'CourseID|CourseName') # Extract column names
 expected_courses_columns="CourseID\nCourseName"
 
@@ -64,7 +45,7 @@ else
     exit 1
 fi
 
-# 4. Check Enrollments Table Structure and Foreign Keys
+# 2. Check Enrollments Table Structure and Foreign Keys
 enrollments_structure=$(execute_sql "DESCRIBE Enrollments;" | awk '{print $1}' | grep -E 'EnrollmentID|StudentID|CourseID|EnrollmentDate')
 expected_enrollments_structure="EnrollmentID\nStudentID\nCourseID\nEnrollmentDate"
 
@@ -77,7 +58,7 @@ fi
 
 
 
-# Check Foreign Key Constraints (more complex, requires parsing SHOW CREATE TABLE)
+# 3. Check Foreign Key Constraints (more complex, requires parsing SHOW CREATE TABLE)
 fk_check=$(execute_sql "SHOW CREATE TABLE Enrollments;" | grep -E "CONSTRAINT `fk_student`|CONSTRAINT `fk_course`")
 
 expected_fk_check="CONSTRAINT `fk_student` FOREIGN KEY (`StudentID`) REFERENCES `Students` (`StudentID`),\n\tCONSTRAINT `fk_course` FOREIGN KEY (`CourseID`) REFERENCES `Courses` (`CourseID`)"
