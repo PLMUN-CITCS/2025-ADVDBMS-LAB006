@@ -16,36 +16,33 @@ execute_sql() {
 }
 
 # --- Validation ---
-
 # 1. Check the Courses table structure (columns)
-courses_columns=$(execute_sql "DESCRIBE Courses;" | awk '{print $1}' | grep -E 'CourseID|CourseName') # Extract column names
-expected_courses_columns="CourseID\nCourseName"
+courses_columns=$(execute_sql "DESCRIBE Courses;" | awk '{print $1}' | grep -E 'CourseID|CourseName' | tr -d '\n') # Remove newlines
+expected_courses_columns="CourseIDCourseName"  # Expected without newlines
 
 if [[ "$courses_columns" == "$expected_courses_columns" ]]; then
     echo "Courses table structure check: PASSED"
 else
-    echo "Courses table structure check: FAILED. Expected columns: $expected_courses_columns, Found: $courses_columns"
+    echo "Courses table structure check: FAILED. Expected columns: '$expected_courses_columns', Found: '$courses_columns'"
     exit 1
 fi
 
 # 2. Check Enrollments Table Structure and Foreign Keys
-enrollments_structure=$(execute_sql "DESCRIBE Enrollments;" | awk '{print $1}' | grep -E 'EnrollmentID|StudentID|CourseID|EnrollmentDate')
-expected_enrollments_structure="EnrollmentID\nStudentID\nCourseID\nEnrollmentDate"
+enrollments_structure=$(execute_sql "DESCRIBE Enrollments;" | awk '{print $1}' | grep -E 'EnrollmentID|StudentID|CourseID|EnrollmentDate' | tr -d '\n') # Remove newlines
+expected_enrollments_structure="EnrollmentIDStudentIDCourseIDEnrollmentDate" # Expected without newlines
 
 if [[ "$enrollments_structure" == "$expected_enrollments_structure" ]]; then
     echo "Enrollments table structure check: PASSED"
 else
-    echo "Enrollments table structure check: FAILED. Expected structure: $expected_enrollments_structure, Found: $enrollments_structure"
+    echo "Enrollments table structure check: FAILED. Expected structure: '$expected_enrollments_structure', Found: '$enrollments_structure'"
     exit 1
 fi
 
+# 3. Check Foreign Key Constraints (more robust and correct)
+fk_check=$(execute_sql "SHOW CREATE TABLE Enrollments;" | grep -E "CONSTRAINT \`fk_student\`|CONSTRAINT \`fk_course\`" | tr -d '\n\t ')
 
-
-# 3. Check Foreign Key Constraints (more complex, requires parsing SHOW CREATE TABLE)
-fk_check=$(execute_sql "SHOW CREATE TABLE Enrollments;" | grep -E "CONSTRAINT `fk_student`|CONSTRAINT `fk_course`")
-
-expected_fk_check="CONSTRAINT `fk_student` FOREIGN KEY (`StudentID`) REFERENCES `Students` (`StudentID`),\n\tCONSTRAINT `fk_course` FOREIGN KEY (`CourseID`) REFERENCES `Courses` (`CourseID`)"
-
+# Improved expected string construction (only constraints)
+expected_fk_check=$(echo "EnrollmentsCREATETABLE\`enrollments\`(\n\`EnrollmentID\`int(11)NOTNULLAUTO_INCREMENT,\n\`StudentID\`int(11)DEFAULTNULL,\n\`CourseID\`int(11)DEFAULTNULL,\n\`EnrollmentDate\`dateDEFAULTNULL,\nPRIMARYKEY(\`EnrollmentID\`),\nKEY\`fk_student\`(\`StudentID\`),\nKEY\`fk_course\`(\`CourseID\`),\nCONSTRAINT\`fk_course\`FOREIGNKEY(\`CourseID\`)REFERENCES\`courses\`(\`CourseID\`),\nCONSTRAINT\`fk_student\`FOREIGNKEY(\`StudentID\`)REFERENCES\`students\`(\`StudentID\`)\n)ENGINE=InnoDBDEFAULTCHARSET=utf8mb4COLLATE=utf8mb4_general_ci" | tr -d '\n\t ')
 
 if [[ "$fk_check" == "$expected_fk_check" ]]; then
     echo "Foreign Key constraints check: PASSED"
