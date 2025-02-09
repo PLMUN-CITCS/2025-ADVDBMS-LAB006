@@ -1,7 +1,7 @@
-2025-ADVDBMS-WK02S02E04
+# **2025-ADVDBMS-LAB006**
 Week 02 - Review on Database Concepts
 
-Exercise # 04 - Guided Coding Exercise: Creating Tables with Primary and Foreign Keys
+Laboratory # 06 - Guided Coding Exercise: Creating Tables with Primary and Foreign Keys
 
 ## **Instructions**
 
@@ -77,7 +77,7 @@ Only perform this if this is the first time you will setup your Git Environment
 
 ### **Step 3: Complete the Assignment**
 
-**Exercise # 04 - Guided Coding Exercise: Creating Tables with Primary and Foreign Keys**
+**Laboratory # 06 - Guided Coding Exercise: Creating Tables with Primary and Foreign Keys**
 
    **Objective:**
    Learn how to create tables with primary and foreign key relationships in SQL. This exercise demonstrates how to link two tables together, ensuring referential integrity.
@@ -94,14 +94,16 @@ Only perform this if this is the first time you will setup your Git Environment
    - `create_enrollments_table.sql`: Contains the SQL statement for creating the Enrollments table with foreign key constraints.
 
    **Notable Observations (to be discussed after completing the exercise):**
-   - Referential Integrity: Foreign keys enforce referential integrity. This means that you cannot insert a record into the `Enrollments` table with a `StudentID` or `CourseID` that does not exist in the `Students` or `Courses` tables, respectively. This helps prevent data inconsistencies.
-   Order of Table Creation: The order in which you create tables with foreign key relationships is crucial. The referenced tables (parent tables) must exist before the referencing table (child table).
-   - Data Types: The data types of the foreign key columns (`StudentID` and `CourseID` in Enrollments) must match the data types of the corresponding primary key columns in the `Students` and `Courses` tables.
-   - Composite Keys: You could also have a composite key in the `Enrollments` table, for example, `(StudentID, CourseID)` to prevent a student from enrolling in the same course multiple times. You would then make that combination `UNIQUE` or `PRIMARY KEY`.
-   - Foreign Key Constraints: Explore different foreign key constraint options, such as `ON DELETE CASCADE` or `ON DELETE SET NULL`, which control what happens when a record in the parent table is deleted.
-   - Database Design: This exercise demonstrates a fundamental database design principle. Proper use of primary and foreign keys is essential for creating relational databases.
-   - ER Diagrams: Entity-relationship (ER) diagrams are a useful tool for visualizing the relationships between tables in a database.
-      
+   - Referential Integrity: The Golden Rule: Foreign keys are all about relationships. They ensure that your data is consistent. You can't enroll a student in a course that doesn't exist. This is called referential integrity, and it's fundamental to relational databases.
+   - Order Matters: Think of it like building a house. You need the foundation (parent tables) before you can build the walls (child tables). The order in which you create tables with foreign keys is crucial.
+   - Data Type Harmony: Foreign keys and their corresponding primary keys must have matching data types. It's like trying to fit a square peg in a round hole if they don't match.
+   - Composite Keys: Two (or More) are Better Than One: Sometimes, a combination of columns makes a good key. A composite key can prevent duplicate enrollments in the same course, for instance.
+   - Constraint Options: The Fine Print: ON DELETE CASCADE or ON DELETE SET NULL give you control over what happens when you delete a record in a parent table. Do you want to delete related records in the child table automatically? Or set the foreign keys to NULL? These are important design decisions.
+
+**SQL Script Best Practices**
+   - Descriptive Constraint Names: Give your foreign key constraints meaningful names (like fk_student or fk_course). This makes your code easier to understand and maintain.
+   - ER Diagrams: Visualize the Connections: Before you start writing SQL, sketch out an ER diagram. It helps you visualize the relationships between your tables and ensures you're designing your database correctly.
+     
    **Step-by-Step Instructions:**
 
    1. Setting up the Environment
